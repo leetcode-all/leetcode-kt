@@ -9,38 +9,18 @@ class Solution {
     }
 
     private fun isMatch(s: String, p: String, si: Int, pi: Int): Boolean {
-        if (s.length == si && p.length == pi) {
-            return true
-        }
+        if (p.length == pi) return s.length == si
 
-        return if (p.length == pi) {
-            return false
-        } else if (p.length == pi + 1) {
-            if (s.length == si) {
-                false
-            } else {
-                (p[pi] == '.' || s[si] == p[pi]) && isMatch(s, p, si + 1, pi + 1)
-            }
+        val firstMatch: Boolean = s.length != si && (p[pi] == '.' || p[pi] == s[si])
+
+        return if (p.length - pi >= 2 && p[pi + 1] == '*') {
+            isMatch(s, p, si, pi + 2) || (firstMatch && isMatch(s, p, si + 1, pi + 2))
         } else {
-            if (s.length == si) {
-                if (p[pi + 1] == '*') {
-                    isMatch(s, p, si, pi + 2)
-                } else {
-                    false
-                }
-            } else {
-                if (p[pi + 1] == '*') {
-                    isMatch(s, p, si, pi + 2) || (p[pi] == '.' || s[si] == p[pi]) && isMatch(s, p, si + 1, pi)
-                } else if (p[pi] == '.' || s[si] == p[pi]) {
-                    isMatch(s, p, si + 1, pi + 1)
-                } else {
-                    false
-                }
-            }
+            firstMatch && isMatch(s, p, si + 1, pi + 1)
         }
     }
 }
 
 fun main() {
-    println(Solution().isMatch("la", "l*"))
+    println(Solution().isMatch("a", "c*a"))
 }
