@@ -1,8 +1,5 @@
 package com.github.alisianoi.problem1601;
 
-import kotlin.Comparator
-import kotlin.collections.HashMap
-
 class Node(val end: Int) {
     var total = 1;
 
@@ -14,6 +11,9 @@ class Node(val end: Int) {
 typealias SimpleGraph = HashMap<Int, MutableList<Int>>
 typealias Graph = HashMap<Int, MutableList<Node>>
 
+// 1 + 2 + 4 + 8 + 16 + 32 + 64 + 128 + 256 + 512 + 2048
+// [[1,1],[1,0],[0,1],[0,0],[0,0],[0,1],[0,1],[1,0],[1,0],[1,1],[0,0],[1,0]]
+// [[1,0],[0,1],[0,1],[0,1],[1,0],[1,0],[1,0]] + 5
 class Solution {
     /**
      * @param n is the number of buildings, numbered 0 to n - 1
@@ -21,30 +21,80 @@ class Solution {
      * @return the maximum number of achievable requests
      */
     fun maximumRequests(n: Int, requests: Array<IntArray>): Int {
-        val graph = buildGraph(requests)
+        var granted = 0
 
-        var answer = 0
-        var visited = mutableListOf(n)
-        for ((node, nodes) in graph.entries) {
-            if (visited[node] == 1) {
-                continue
+        for (mask in 0 until fastPow(2, requests.size)) {
+            var total = 0
+            var (i, m) = listOf(0, mask)
+            val counts = MutableList(n) { 0 }
+
+            while (m != 0) {
+                if (m % 2 == 1) {
+                    val (from, into) = requests[i]
+
+                    counts[from]--
+                    counts[into]++
+
+                    total++
+                }
+
+                i++
+                m /= 2
             }
 
-//            answer += maximumRequests(graph, visited, node, nodes, graph);
+            println(mask)
+            if (mask == 3071) {
+                println(counts)
+                println(granted)
+                println(total)
+            }
+
+            if (counts.find {count -> count != 0} == null && total > granted) {
+                granted = total
+            }
         }
 
-        return answer
+        return granted
     }
 
-    private fun maximumRequests(graph: Graph, visited: MutableList<Int>, node: Int, nodes: MutableList<Node>): Int {
-        var answer = 0
-        for (end in nodes) {
-            if (visited[end.end] == 1) {
-                continue
-            }
+    fun fastPow(base: Int, exponent: Int): Int {
+        if (exponent < 0) {
+            throw IllegalArgumentException("exponent must be non-negative")
         }
 
-        return answer
+        if (exponent == 0) {
+            return 1
+        }
+
+        var x = 1
+        var b = base
+        var n = exponent
+
+        while (n != 1) {
+            if (n % 2 == 1) {
+                x *= b
+            }
+            b *= b
+            n /= 2
+        }
+
+        return x * b
+    }
+
+    fun fastPow0(base: Int, exponent: Int): Int {
+        if (exponent == 0) {
+            return 1
+        }
+
+        if (exponent == 1) {
+            return base
+        }
+
+        return if (exponent % 2 == 0) {
+            fastPow0(base * base, exponent / 2)
+        } else {
+            base * fastPow0(base * base, exponent / 2)
+        }
     }
 
     fun depthFirstSearch(n: Int, edges: Array<IntArray>) {
@@ -77,7 +127,7 @@ class Solution {
 
         graph.forEach { (node, nodes) ->
             graph[node] = nodes
-                .sortedWith(Comparator { lft, rgt -> lft.end.compareTo(rgt.end) })
+                .sortedWith { lft, rgt -> lft.end.compareTo(rgt.end) }
                 .fold(mutableListOf(), { xs, x ->
                     if (xs.isNotEmpty() && xs.last().end == x.end) {
                         xs.last().total++
@@ -107,5 +157,13 @@ class Solution {
 }
 
 fun main() {
-    Solution().maximumRequests(0, arrayOf(intArrayOf(1, 2), intArrayOf(0, 1), intArrayOf(2, 0), intArrayOf(1, 2)))
+    for (i in 0..15) {
+        println("$i ${Solution().fastPow(2, i)}")
+    }
+//    println(
+//        Solution().maximumRequests(
+//            2,
+//            arrayOf(intArrayOf(1,1),intArrayOf(1,0),intArrayOf(0,1),intArrayOf(0,0),intArrayOf(0,0),intArrayOf(0,1),intArrayOf(0,1),intArrayOf(1,0),intArrayOf(1,0),intArrayOf(1,1),intArrayOf(0,0),intArrayOf(1,0))
+//        )
+//    )
 }
