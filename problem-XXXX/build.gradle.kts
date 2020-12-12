@@ -1,3 +1,3 @@
 application {
-    mainClassName = "com.github.alisianoi.problemXXXX.SolutionKt"
+    mainClass.set("com.github.alisianoi.problemXXXX.SolutionKt")
 }
