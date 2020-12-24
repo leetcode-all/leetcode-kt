@@ -56,4 +56,4 @@ open class LeetcodeAttempt : DefaultTask() {
     }
 }
 
- tasks.register<LeetcodeAttempt>("attempt")
+tasks.register<LeetcodeAttempt>("attempt")
