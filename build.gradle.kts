@@ -1,5 +1,5 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.3.50"
+    id("org.jetbrains.kotlin.jvm") version "1.4.20"
 }
 
 repositories {
@@ -13,13 +13,6 @@ subprojects {
 
     repositories {
         jcenter()
-    }
-
-    dependencies {
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
-        testImplementation("org.jetbrains.kotlin:kotlin-test")
-        testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
     }
 }
 
@@ -44,7 +37,7 @@ open class LeetcodeAttempt : DefaultTask() {
             return
         }
 
-        for (candidate in File("${project.projectDir}/problem-XXXX").listFiles() ?: emptyList()) {
+        for (candidate in File("${project.projectDir}/problem-XXXX").listFiles()!!) {
             if (candidate.isDirectory && candidate.name.matches("build".toRegex())) {
                 continue // will skip build directory if it exists
             }
