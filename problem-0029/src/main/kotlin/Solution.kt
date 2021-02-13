@@ -15,9 +15,9 @@ class Solution {
         while (x <= y) {
             var count = 1
             var total = y
-            while (total + total < 0 && x <= total + total) {
-                total = total + total
-                count = count + count
+            while (total + total in x..-1) {
+                total += total
+                count += count
             }
             x -= total
             answer -= count
