@@ -3,7 +3,7 @@ plugins {
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 subprojects {
@@ -12,7 +12,7 @@ subprojects {
     apply(plugin = "application")
 
     repositories {
-        jcenter()
+        mavenCentral()
     }
 }
 
